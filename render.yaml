@@ -20,15 +20,17 @@ services:
     # Render hits this path every 30s. If it 200s, service is healthy.
     healthCheckPath: /healthz
 
-    # Environment variables available at runtime.
-    # Real secrets go in the dashboard UI, not here.
     envVars:
       - key: LOG_LEVEL
         value: info
       - key: DEBUG_LOG_REQUESTS
         value: "false"
-      # MOH facility config — set real values in Render dashboard
+
+      # --- Kenya MOH facility identity (demo values for hackathon) ---
+      # Code 99001 is intentionally outside the real KMFL range (10000-50000+)
+      # to clearly signal this is a demo facility, not a registered one.
+      # In production, override these via Render dashboard per-facility.
       - key: MOH_FACILITY_CODE
-        sync: false             # "sync: false" = managed in dashboard UI
+        value: "99001"
       - key: MOH_FACILITY_NAME
-        sync: false
+        value: "Jamii Health Demo Clinic - Nairobi"
