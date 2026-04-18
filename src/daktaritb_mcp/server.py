@@ -11,6 +11,7 @@ Run locally:
 from __future__ import annotations
 
 import logging
+import traceback
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -18,8 +19,10 @@ from fastapi.responses import JSONResponse
 
 from daktaritb_mcp import __version__
 from daktaritb_mcp.config import settings
+from daktaritb_mcp.fhir.context import MissingFhirContext, extract_context
 from daktaritb_mcp.mcp import initialize as mcp_initialize
 from daktaritb_mcp.mcp.protocol import ErrorCode, JsonRpcRequest, fail, ok
+from daktaritb_mcp.tools import get_tool, list_tools
 
 logging.basicConfig(level=settings.log_level.upper())
 log = logging.getLogger("daktaritb_mcp")
@@ -33,7 +36,7 @@ app = FastAPI(
 
 @app.get("/healthz")
 async def healthz() -> dict[str, Any]:
-    """Simple liveness probe. Used by DigitalOcean / load balancers."""
+    """Simple liveness probe."""
     return {"status": "ok", "service": "daktaritb-mcp", "version": __version__}
 
 
@@ -41,12 +44,11 @@ async def healthz() -> dict[str, Any]:
 async def mcp_endpoint(request: Request) -> JSONResponse:
     """Handle MCP JSON-RPC 2.0 requests.
 
-    Current methods supported:
-      - initialize  : advertises capabilities (FHIR context extension)
-      - tools/list  : returns [] for now; tools arrive in step 2
-      - tools/call  : returns METHOD_NOT_FOUND until step 2
-
-    Everything else returns a standard METHOD_NOT_FOUND error.
+    Methods:
+      - initialize              : advertise FHIR context capability
+      - notifications/initialized: ack (no response)
+      - tools/list              : return declared tools
+      - tools/call              : dispatch to tool implementation
     """
     try:
         body = await request.json()
@@ -58,7 +60,6 @@ async def mcp_endpoint(request: Request) -> JSONResponse:
             status_code=400,
         )
 
-    # Parse into a JsonRpcRequest (handles validation).
     try:
         rpc = JsonRpcRequest.model_validate(body)
     except Exception as e:
@@ -74,35 +75,95 @@ async def mcp_endpoint(request: Request) -> JSONResponse:
     if settings.debug_log_requests:
         log.info("MCP method=%s id=%s", rpc.method, rpc.id)
 
-    # Dispatch on method.
+    # --- initialize ---
     if rpc.method == "initialize":
         params = rpc.params if isinstance(rpc.params, dict) else None
         result = mcp_initialize.handle_initialize(params)
         return JSONResponse(content=ok(rpc.id, result).model_dump(exclude_none=True))
 
-    if rpc.method == "tools/list":
-        # Empty for now — Step 2 fills this in with order_tb_workup etc.
-        return JSONResponse(content=ok(rpc.id, {"tools": []}).model_dump(exclude_none=True))
-
+    # --- initialized notification (no response body, but must 200) ---
     if rpc.method == "notifications/initialized":
-        # MCP clients send this notification after initialize. No response needed
-        # for notifications (no id), but return 200 with empty body.
         return JSONResponse(content={}, status_code=200)
+
+    # --- tools/list ---
+    if rpc.method == "tools/list":
+        return JSONResponse(
+            content=ok(rpc.id, {"tools": list_tools()}).model_dump(exclude_none=True)
+        )
+
+    # --- tools/call ---
+    if rpc.method == "tools/call":
+        params = rpc.params if isinstance(rpc.params, dict) else {}
+        tool_name = params.get("name")
+        arguments = params.get("arguments", {}) or {}
+
+        tool = get_tool(tool_name) if tool_name else None
+        if not tool:
+            return JSONResponse(
+                content=fail(
+                    rpc.id,
+                    ErrorCode.INVALID_PARAMS,
+                    f"Unknown tool: {tool_name}",
+                ).model_dump(exclude_none=True)
+            )
+
+        ctx = extract_context(request)
+
+        try:
+            result = await tool.impl(ctx, arguments)
+        except MissingFhirContext as e:
+            return JSONResponse(
+                content=fail(rpc.id, ErrorCode.INVALID_PARAMS, str(e)).model_dump(
+                    exclude_none=True
+                )
+            )
+        except ValueError as e:
+            return JSONResponse(
+                content=fail(rpc.id, ErrorCode.INVALID_PARAMS, str(e)).model_dump(
+                    exclude_none=True
+                )
+            )
+        except Exception as e:
+            log.error("tools/call %s failed: %s\n%s", tool_name, e, traceback.format_exc())
+            return JSONResponse(
+                content=fail(
+                    rpc.id,
+                    ErrorCode.INTERNAL_ERROR,
+                    f"Tool execution failed: {e}",
+                ).model_dump(exclude_none=True)
+            )
+
+        # MCP tools/call response shape: content as array of content parts.
+        return JSONResponse(
+            content=ok(
+                rpc.id,
+                {
+                    "content": [
+                        {"type": "text", "text": _summarize_for_humans(tool_name, result)},
+                    ],
+                    "structuredContent": result,
+                    "isError": False,
+                },
+            ).model_dump(exclude_none=True)
+        )
 
     return JSONResponse(
         content=fail(rpc.id, ErrorCode.METHOD_NOT_FOUND, f"Method not found: {rpc.method}").model_dump(
             exclude_none=True
         ),
-        status_code=200,  # JSON-RPC errors are 200 at HTTP level by convention
+        status_code=200,
     )
 
 
-def run() -> None:
-    """Entrypoint for `python -m daktaritb_mcp.server`.
+def _summarize_for_humans(tool_name: str, result: dict[str, Any]) -> str:
+    """Short natural-language summary shown in chat UI alongside structured output."""
+    if tool_name == "order_tb_workup":
+        return result.get("summary", "TB workup orders placed.")
+    return f"Tool {tool_name} completed."
 
-    Reads PORT from environment (Render / Fly / Heroku all set this).
-    Falls back to the configured default (8000).
-    """
+
+def run() -> None:
+    """Entrypoint for `python -m daktaritb_mcp.server`."""
     import os
 
     import uvicorn
