@@ -55,10 +55,11 @@ def test_initialize_declares_fhir_context_extension():
     assert result["serverInfo"]["name"] == "daktaritb-mcp"
 
 
-def test_tools_list_returns_empty_for_now():
-    """tools/list should return an empty list in Step 1b.
+def test_tools_list_returns_valid_shape():
+    """tools/list should return a list of tool declarations.
 
-    Step 2 will populate this with order_tb_workup, adjust_art_for_rif, etc.
+    We don't assert which tools exist — that's tested per-tool. Here we
+    just verify the response shape so clients can parse it.
     """
     response = client.post(
         "/mcp",
@@ -66,7 +67,15 @@ def test_tools_list_returns_empty_for_now():
     )
     assert response.status_code == 200
     body = response.json()
-    assert body["result"] == {"tools": []}
+    assert "result" in body
+    assert "tools" in body["result"]
+    tools = body["result"]["tools"]
+    assert isinstance(tools, list)
+    for tool in tools:
+        # MCP spec: each tool must have name, description, inputSchema
+        assert "name" in tool
+        assert "description" in tool
+        assert "inputSchema" in tool
 
 
 def test_unknown_method_returns_method_not_found():
