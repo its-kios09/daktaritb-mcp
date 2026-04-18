@@ -1,0 +1,34 @@
+# DaktariTB MCP — Render.com Blueprint
+# Docs: https://render.com/docs/blueprint-spec
+#
+# To deploy:
+#   1. Push this file to GitHub
+#   2. In Render dashboard: New > Blueprint > connect this repo
+#   3. Render reads render.yaml and creates the service
+#
+# To change config: edit this file, push, Render auto-applies.
+
+services:
+  - type: web
+    name: daktaritb-mcp
+    runtime: docker
+    region: frankfurt          # Closest to Nairobi among Render's regions
+    plan: free                 # 750 hours/month, spins down after 15min idle
+    branch: main
+    dockerfilePath: ./Dockerfile
+
+    # Render hits this path every 30s. If it 200s, service is healthy.
+    healthCheckPath: /healthz
+
+    # Environment variables available at runtime.
+    # Real secrets go in the dashboard UI, not here.
+    envVars:
+      - key: LOG_LEVEL
+        value: info
+      - key: DEBUG_LOG_REQUESTS
+        value: "false"
+      # MOH facility config — set real values in Render dashboard
+      - key: MOH_FACILITY_CODE
+        sync: false             # "sync: false" = managed in dashboard UI
+      - key: MOH_FACILITY_NAME
+        sync: false

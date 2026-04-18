@@ -1,0 +1,50 @@
+# Version control
+.git/
+.gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtualenv (we install deps fresh inside the image)
+.venv/
+venv/
+env/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Testing / lint caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Environment files (secrets never enter the image)
+.env
+.env.*
+!.env.example
+
+# AI agent metadata
+.qodo/
+
+# Docs and misc files that don't need to run inside the container
+docs/
+scripts/
+tests/
+fixtures/
+*.md
+!README.md
+setup-step*.sh

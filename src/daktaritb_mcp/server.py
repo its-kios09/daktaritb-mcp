@@ -95,3 +95,26 @@ async def mcp_endpoint(request: Request) -> JSONResponse:
         ),
         status_code=200,  # JSON-RPC errors are 200 at HTTP level by convention
     )
+
+
+def run() -> None:
+    """Entrypoint for `python -m daktaritb_mcp.server`.
+
+    Reads PORT from environment (Render / Fly / Heroku all set this).
+    Falls back to the configured default (8000).
+    """
+    import os
+
+    import uvicorn
+
+    port = int(os.environ.get("PORT", settings.port))
+    uvicorn.run(
+        "daktaritb_mcp.server:app",
+        host=settings.host,
+        port=port,
+        log_level=settings.log_level,
+    )
+
+
+if __name__ == "__main__":
+    run()
