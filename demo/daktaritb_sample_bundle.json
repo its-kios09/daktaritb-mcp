@@ -1,0 +1,875 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.kenyahmis.org/upi",
+            "value": "KE-WANJ001"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Kamau",
+            "given": [
+              "Wanjiru"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1991-06-14",
+        "address": [
+          {
+            "use": "home",
+            "city": "Nairobi",
+            "country": "KE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4f0235d8-ed9d-460d-9540-610cde5ad6ba",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B20",
+              "display": "HIV disease (AIDS)"
+            }
+          ],
+          "text": "HIV disease (AIDS)"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "onsetDateTime": "2022-11-10"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:353e8dd2-3a77-4694-84b9-27ab616ff48b",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "display": "Tenofovir/Lamivudine/Dolutegravir (TLD)"
+            }
+          ],
+          "text": "Tenofovir/Lamivudine/Dolutegravir (TLD)"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectivePeriod": {
+          "start": "2022-11-20"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cea818f2-4c47-429f-9b79-2c52a2c75d53",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "24467-3",
+              "display": "CD4 count"
+            }
+          ],
+          "text": "CD4 count"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2025-10-20T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 480,
+          "unit": "cells/uL",
+          "system": "http://unitsofmeasure.org",
+          "code": "cells/uL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:f20c91e1-c269-4934-84e3-0b2018a8b419",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "24467-3",
+              "display": "CD4 count"
+            }
+          ],
+          "text": "CD4 count"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2026-04-11T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 290,
+          "unit": "cells/uL",
+          "system": "http://unitsofmeasure.org",
+          "code": "cells/uL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5c8511cd-b6fc-4fe5-b41a-6e83bf85cc5f",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "25836-8",
+              "display": "HIV viral load"
+            }
+          ],
+          "text": "HIV viral load"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2026-04-11T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 40,
+          "unit": "copies/mL",
+          "system": "http://unitsofmeasure.org",
+          "code": "copies/mL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:52ae9681-b5b1-4a09-8ab2-53f26e78e653",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "29463-7",
+              "display": "Body weight"
+            }
+          ],
+          "text": "Body weight"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2025-10-20T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 68,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:662f1593-c27a-451d-b133-42b26017a532",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "29463-7",
+              "display": "Body weight"
+            }
+          ],
+          "text": "Body weight"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2026-04-11T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 60,
+          "unit": "kg",
+          "system": "http://unitsofmeasure.org",
+          "code": "kg"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e4ae3d46-d8ab-447d-ab68-70d06b5320c5",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "8310-5",
+              "display": "Body temperature"
+            }
+          ],
+          "text": "Body temperature"
+        },
+        "subject": {
+          "reference": "urn:uuid:73891b29-b00b-4ecf-93b8-9e78557f6e31"
+        },
+        "effectiveDateTime": "2026-04-16T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 38.4,
+          "unit": "Cel",
+          "system": "http://unitsofmeasure.org",
+          "code": "Cel"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3dbc683a-ff1d-4934-abb8-4d19316b830e",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.kenyahmis.org/upi",
+            "value": "KE-JOSE002"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Otieno",
+            "given": [
+              "Joseph"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1983-11-22",
+        "address": [
+          {
+            "use": "home",
+            "city": "Kisumu",
+            "country": "KE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:5201b165-0190-428e-ab14-eeaa5f207b57",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B20",
+              "display": "HIV disease"
+            }
+          ],
+          "text": "HIV disease"
+        },
+        "subject": {
+          "reference": "urn:uuid:3dbc683a-ff1d-4934-abb8-4d19316b830e"
+        },
+        "onsetDateTime": "2020-03-15"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:db984d40-0719-4edb-b13b-44f8d335f7ee",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "display": "Tenofovir/Lamivudine/Dolutegravir (TLD)"
+            }
+          ],
+          "text": "Tenofovir/Lamivudine/Dolutegravir (TLD)"
+        },
+        "subject": {
+          "reference": "urn:uuid:3dbc683a-ff1d-4934-abb8-4d19316b830e"
+        },
+        "effectivePeriod": {
+          "start": "2020-03-20"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:03293066-5356-42f0-afd8-e7f182c1ea28",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "24467-3",
+              "display": "CD4 count"
+            }
+          ],
+          "text": "CD4 count"
+        },
+        "subject": {
+          "reference": "urn:uuid:3dbc683a-ff1d-4934-abb8-4d19316b830e"
+        },
+        "effectiveDateTime": "2026-03-19T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 720,
+          "unit": "cells/uL",
+          "system": "http://unitsofmeasure.org",
+          "code": "cells/uL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:40b0441a-d8e0-4e68-bdac-6faf57e63842",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "25836-8",
+              "display": "HIV viral load"
+            }
+          ],
+          "text": "HIV viral load"
+        },
+        "subject": {
+          "reference": "urn:uuid:3dbc683a-ff1d-4934-abb8-4d19316b830e"
+        },
+        "effectiveDateTime": "2026-03-19T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 20,
+          "unit": "copies/mL",
+          "system": "http://unitsofmeasure.org",
+          "code": "copies/mL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0b8a9529-0902-4618-aada-90733d637206",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.kenyahmis.org/upi",
+            "value": "KE-AMIN003"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Hassan",
+            "given": [
+              "Amina"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1997-04-03",
+        "address": [
+          {
+            "use": "home",
+            "city": "Mombasa",
+            "country": "KE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:74298b6e-0db7-4a97-bcb8-a85a4935a62b",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "A15.0",
+              "display": "Tuberculosis of lung, confirmed"
+            }
+          ],
+          "text": "Tuberculosis of lung, confirmed"
+        },
+        "subject": {
+          "reference": "urn:uuid:0b8a9529-0902-4618-aada-90733d637206"
+        },
+        "onsetDateTime": "2026-02-15"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:2a4c9daf-a901-46ec-812b-1c4c45b22aac",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "display": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol (RHZE) fixed-dose combination"
+            }
+          ],
+          "text": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol (RHZE) fixed-dose combination"
+        },
+        "subject": {
+          "reference": "urn:uuid:0b8a9529-0902-4618-aada-90733d637206"
+        },
+        "effectivePeriod": {
+          "start": "2026-02-20"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ccd0b906-f902-4341-a365-1e3510f32883",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.kenyahmis.org/upi",
+            "value": "KE-GRAC004"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Njeri",
+            "given": [
+              "Grace"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1999-09-18",
+        "address": [
+          {
+            "use": "home",
+            "city": "Nakuru",
+            "country": "KE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:75837b87-10e7-4c8e-908c-f47a0179f023",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B20",
+              "display": "HIV disease (newly diagnosed)"
+            }
+          ],
+          "text": "HIV disease (newly diagnosed)"
+        },
+        "subject": {
+          "reference": "urn:uuid:ccd0b906-f902-4341-a365-1e3510f32883"
+        },
+        "onsetDateTime": "2026-04-08"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c791e41b-8646-4a88-98f4-6a652f92a99f",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "24467-3",
+              "display": "CD4 count"
+            }
+          ],
+          "text": "CD4 count"
+        },
+        "subject": {
+          "reference": "urn:uuid:ccd0b906-f902-4341-a365-1e3510f32883"
+        },
+        "effectiveDateTime": "2026-04-13T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 180,
+          "unit": "cells/uL",
+          "system": "http://unitsofmeasure.org",
+          "code": "cells/uL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ba246eca-3fe1-43ea-95c8-42a06b95ae54",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "25836-8",
+              "display": "HIV viral load"
+            }
+          ],
+          "text": "HIV viral load"
+        },
+        "subject": {
+          "reference": "urn:uuid:ccd0b906-f902-4341-a365-1e3510f32883"
+        },
+        "effectiveDateTime": "2026-04-13T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 85000,
+          "unit": "copies/mL",
+          "system": "http://unitsofmeasure.org",
+          "code": "copies/mL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "https://fhir.kenyahmis.org/upi",
+            "value": "KE-SAMU005"
+          }
+        ],
+        "active": true,
+        "name": [
+          {
+            "use": "official",
+            "family": "Kiprop",
+            "given": [
+              "Samuel"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1987-02-11",
+        "address": [
+          {
+            "use": "home",
+            "city": "Eldoret",
+            "country": "KE"
+          }
+        ]
+      },
+      "request": {
+        "method": "POST",
+        "url": "Patient"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:ee58dc69-94c6-47b3-9f9d-94c62a3f7d67",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "B20",
+              "display": "HIV disease"
+            }
+          ],
+          "text": "HIV disease"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "onsetDateTime": "2023-05-12"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:290366b2-d5b2-4dd4-aed5-49fcefde70b3",
+      "resource": {
+        "resourceType": "Condition",
+        "clinicalStatus": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/condition-clinical",
+              "code": "active"
+            }
+          ]
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/sid/icd-10",
+              "code": "A15.0",
+              "display": "Tuberculosis of lung, confirmed"
+            }
+          ],
+          "text": "Tuberculosis of lung, confirmed"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "onsetDateTime": "2026-03-28"
+      },
+      "request": {
+        "method": "POST",
+        "url": "Condition"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e63bc2c1-dc36-42f1-8749-49df14d338aa",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "display": "Tenofovir/Lamivudine/Dolutegravir 300mg/300mg/50mg once daily"
+            }
+          ],
+          "text": "Tenofovir/Lamivudine/Dolutegravir 300mg/300mg/50mg once daily"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "effectivePeriod": {
+          "start": "2023-06-01"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:e8199698-05d2-459e-b77b-45707ea564c5",
+      "resource": {
+        "resourceType": "MedicationStatement",
+        "status": "active",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
+              "display": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol (RHZE) fixed-dose combination"
+            }
+          ],
+          "text": "Rifampicin/Isoniazid/Pyrazinamide/Ethambutol (RHZE) fixed-dose combination"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "effectivePeriod": {
+          "start": "2026-03-31"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "MedicationStatement"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:da677efe-b70c-4dd3-adbd-7faf3c8dfa36",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "24467-3",
+              "display": "CD4 count"
+            }
+          ],
+          "text": "CD4 count"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "effectiveDateTime": "2026-03-27T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 210,
+          "unit": "cells/uL",
+          "system": "http://unitsofmeasure.org",
+          "code": "cells/uL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:cb4b75c5-63dc-451f-aec2-1e2ae1748cc7",
+      "resource": {
+        "resourceType": "Observation",
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "25836-8",
+              "display": "HIV viral load"
+            }
+          ],
+          "text": "HIV viral load"
+        },
+        "subject": {
+          "reference": "urn:uuid:8be1f454-382a-46a4-8360-6e2865432b78"
+        },
+        "effectiveDateTime": "2026-03-27T00:00:00+03:00",
+        "valueQuantity": {
+          "value": 80,
+          "unit": "copies/mL",
+          "system": "http://unitsofmeasure.org",
+          "code": "copies/mL"
+        }
+      },
+      "request": {
+        "method": "POST",
+        "url": "Observation"
+      }
+    }
+  ]
+}
