@@ -1,4 +1,4 @@
-"""Integration: tools/list returns all registered tools."""
+"""Integration: tools/list returns all 3 tools."""
 
 from fastapi.testclient import TestClient
 
@@ -16,11 +16,10 @@ def test_tools_list_returns_all_tools():
     tools = body["result"]["tools"]
     names = {t["name"] for t in tools}
 
-    # Every tool we've shipped must be present.
     assert "order_tb_workup" in names
     assert "adjust_art_for_rif" in names
+    assert "generate_tb_notification" in names
 
-    # Each must have valid MCP tool shape.
     for tool in tools:
         assert "name" in tool
         assert "description" in tool

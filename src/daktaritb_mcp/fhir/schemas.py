@@ -260,3 +260,76 @@ def detected_issue(
         ]
 
     return resource
+
+
+# --- DocumentReference codes (LOINC) ---
+LOINC_TB_CASE_REPORT = "67796-1"   # "Public Health Case Report - US National Notifiable Condition Mapping"
+# Generic "Patient transfer note" fallback when a more specific code isn't appropriate.
+
+
+def document_reference(
+    *,
+    patient_id: str,
+    pdf_base64: str,
+    title: str,
+    description: str,
+    document_type_code: str = LOINC_TB_CASE_REPORT,
+    document_type_display: str = "Public health case report",
+    category_code: str = "health-summary",
+    category_display: str = "Health summary",
+    related_conditions: list[str] | None = None,
+    facility_name: str | None = None,
+    notification_date: str | None = None,
+) -> dict[str, Any]:
+    """Build a FHIR DocumentReference wrapping a base64-encoded PDF.
+
+    Args:
+        patient_id: FHIR id of the patient
+        pdf_base64: base64-encoded PDF bytes (contentType application/pdf)
+        title: human-readable document title
+        description: short description of the document
+        document_type_code: LOINC code for the document
+        category_code: DocumentReferenceCategory code
+        related_conditions: list of "Condition/<id>" refs the document relates to
+        facility_name: facility that produced the document
+        notification_date: ISO date of the notification (defaults to now)
+    """
+    resource: dict[str, Any] = {
+        "resourceType": "DocumentReference",
+        "status": "current",
+        "docStatus": "final",
+        "type": codeable(LOINC_SYSTEM, document_type_code, document_type_display),
+        "category": [
+            codeable(
+                "http://hl7.org/fhir/us/core/CodeSystem/us-core-documentreference-category",
+                category_code,
+                category_display,
+            )
+        ],
+        "subject": {"reference": f"Patient/{patient_id}"},
+        "date": notification_date or now_iso(),
+        "author": [{"display": "DaktariTB MCP Agent"}],
+        "description": description,
+        "content": [
+            {
+                "attachment": {
+                    "contentType": "application/pdf",
+                    "data": pdf_base64,
+                    "title": title,
+                    "creation": notification_date or now_iso(),
+                }
+            }
+        ],
+    }
+
+    if related_conditions:
+        resource["context"] = {
+            "related": [{"reference": ref} for ref in related_conditions]
+        }
+
+    if facility_name:
+        # FHIR custodian would usually be a real Organization reference; for
+        # the demo we use the display slot only.
+        resource["custodian"] = {"display": facility_name}
+
+    return resource

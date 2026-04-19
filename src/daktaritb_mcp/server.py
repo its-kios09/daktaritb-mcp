@@ -166,6 +166,13 @@ def _summarize_for_humans(tool_name: str, result: dict[str, Any]) -> str:
         if status == "error":
             return f"ART adjustment failed at step {result.get('step_failed', 'unknown')}."
         return result.get("summary", "ART regimen adjusted for rifampicin.")
+    if tool_name == "generate_tb_notification":
+        status = result.get("status", "")
+        if status == "skipped":
+            return result.get("reason", "No TB notification generated.")
+        if status == "error":
+            return f"TB notification failed at step {result.get('step_failed', 'unknown')}."
+        return result.get("summary", "TB notification generated.")
     return f"Tool {tool_name} completed."
 
 
