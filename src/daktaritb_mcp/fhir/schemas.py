@@ -87,3 +87,176 @@ def service_request(
         resource["reasonCode"] = [{"text": reason_text}]
 
     return resource
+
+
+# --- RxNorm codes (US-centric but widely used in FHIR) ---
+# Dolutegravir 50 mg oral tablet
+RXNORM_DTG_50MG = "1747694"
+# TLD fixed-dose combination (Tenofovir/Lamivudine/Dolutegravir)
+RXNORM_TLD = "2180325"
+# Rifampicin
+RXNORM_RIFAMPICIN = "9384"
+
+# --- SNOMED clinical codes for interactions ---
+SNOMED_DDI_SERIOUS = "282100009"  # "Adverse reaction caused by drug"
+SNOMED_DDI_INTERACTION = "182842008"  # "Drug interaction"
+
+
+def medication_request(
+    *,
+    patient_id: str,
+    medication_code: str,
+    medication_display: str,
+    dose_quantity_value: float,
+    dose_unit: str,
+    dose_unit_code: str,
+    dose_frequency: int,
+    dose_period: float,
+    dose_period_unit: str,
+    route_code: str = "26643006",  # SNOMED: Oral
+    route_display: str = "Oral route",
+    status: str = "active",
+    intent: str = "order",
+    priority: str = "routine",
+    reason_references: list[str] | None = None,
+    reason_text: str | None = None,
+    supersedes: str | None = None,
+    detected_issue: str | None = None,
+    note: str | None = None,
+) -> dict[str, Any]:
+    """Build a FHIR MedicationRequest (a prescription order).
+
+    Args:
+        patient_id: FHIR id of the patient
+        medication_code: RxNorm or ATC code
+        medication_display: human-readable drug name
+        dose_quantity_value: amount per dose (e.g., 50)
+        dose_unit: display unit (e.g., "mg")
+        dose_unit_code: UCUM code (e.g., "mg")
+        dose_frequency: number of doses per period (e.g., 2 for BID)
+        dose_period: length of period (e.g., 1)
+        dose_period_unit: UCUM period unit (e.g., "d" for day)
+        supersedes: optional "MedicationRequest/<id>" ref to the old prescription
+        detected_issue: optional "DetectedIssue/<id>" ref documenting why changed
+        note: free-text note added to the prescription
+    """
+    resource: dict[str, Any] = {
+        "resourceType": "MedicationRequest",
+        "status": status,
+        "intent": intent,
+        "priority": priority,
+        "medicationCodeableConcept": codeable(
+            "http://www.nlm.nih.gov/research/umls/rxnorm",
+            medication_code,
+            medication_display,
+        ),
+        "subject": {"reference": f"Patient/{patient_id}"},
+        "authoredOn": now_iso(),
+        "requester": {"display": "DaktariTB MCP Agent"},
+        "dosageInstruction": [
+            {
+                "text": f"{medication_display} {dose_quantity_value} {dose_unit} "
+                + (
+                    "twice daily"
+                    if dose_frequency == 2 and dose_period == 1 and dose_period_unit == "d"
+                    else "once daily"
+                    if dose_frequency == 1 and dose_period == 1 and dose_period_unit == "d"
+                    else f"{dose_frequency} times per {dose_period}{dose_period_unit}"
+                ),
+                "timing": {
+                    "repeat": {
+                        "frequency": dose_frequency,
+                        "period": dose_period,
+                        "periodUnit": dose_period_unit,
+                    }
+                },
+                "route": codeable(SNOMED_SYSTEM, route_code, route_display),
+                "doseAndRate": [
+                    {
+                        "doseQuantity": {
+                            "value": dose_quantity_value,
+                            "unit": dose_unit,
+                            "system": "http://unitsofmeasure.org",
+                            "code": dose_unit_code,
+                        }
+                    }
+                ],
+            }
+        ],
+    }
+
+    if reason_references:
+        resource["reasonReference"] = [{"reference": ref} for ref in reason_references]
+    if reason_text:
+        resource["reasonCode"] = [{"text": reason_text}]
+    if supersedes:
+        resource["priorPrescription"] = {"reference": supersedes}
+    if detected_issue:
+        resource["detectedIssue"] = [{"reference": detected_issue}]
+    if note:
+        resource["note"] = [{"text": note}]
+
+    return resource
+
+
+def detected_issue(
+    *,
+    patient_id: str,
+    severity: str,
+    issue_code: str,
+    issue_display: str,
+    detail: str,
+    implicated_references: list[str] | None = None,
+    evidence_detail: str | None = None,
+    mitigation: str | None = None,
+) -> dict[str, Any]:
+    """Build a FHIR DetectedIssue resource.
+
+    A DetectedIssue formally documents a clinical concern identified about the
+    patient's chart — drug-drug interactions, duplicate therapies, contraindications.
+    It's the FHIR-native way to record "something requires attention here."
+
+    Args:
+        severity: "high", "moderate", or "low"
+        issue_code: SNOMED code for the issue type
+        issue_display: human-readable issue name
+        detail: text explanation of the issue
+        implicated_references: list of resource refs that are involved
+            (e.g., the original MedicationStatement + the new rifampicin order)
+        evidence_detail: source of the evidence (e.g., WHO guideline citation)
+        mitigation: what action was taken to address the issue
+    """
+    if severity not in ("high", "moderate", "low"):
+        raise ValueError(f"Invalid severity '{severity}'. Must be high/moderate/low.")
+
+    resource: dict[str, Any] = {
+        "resourceType": "DetectedIssue",
+        "status": "final",
+        "severity": severity,
+        "code": codeable(SNOMED_SYSTEM, issue_code, issue_display),
+        "patient": {"reference": f"Patient/{patient_id}"},
+        "identifiedDateTime": now_iso(),
+        "author": {"display": "DaktariTB MCP Agent"},
+        "detail": detail,
+    }
+
+    if implicated_references:
+        resource["implicated"] = [{"reference": ref} for ref in implicated_references]
+
+    if evidence_detail:
+        resource["evidence"] = [
+            {
+                "detail": [{"display": evidence_detail}],
+            }
+        ]
+
+    if mitigation:
+        resource["mitigation"] = [
+            {
+                "action": codeable(SNOMED_SYSTEM, "281647001", "Adverse reaction mitigation"),
+                "date": now_iso(),
+                "author": {"display": "DaktariTB MCP Agent"},
+            }
+        ]
+
+    return resource

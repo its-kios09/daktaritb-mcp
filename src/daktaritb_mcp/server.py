@@ -159,6 +159,13 @@ def _summarize_for_humans(tool_name: str, result: dict[str, Any]) -> str:
     """Short natural-language summary shown in chat UI alongside structured output."""
     if tool_name == "order_tb_workup":
         return result.get("summary", "TB workup orders placed.")
+    if tool_name == "adjust_art_for_rif":
+        status = result.get("status", "")
+        if status == "skipped":
+            return result.get("reason", "No ART adjustment needed.")
+        if status == "error":
+            return f"ART adjustment failed at step {result.get('step_failed', 'unknown')}."
+        return result.get("summary", "ART regimen adjusted for rifampicin.")
     return f"Tool {tool_name} completed."
 
 
